@@ -482,6 +482,12 @@ type KanikoAdditionalMount struct {
 	// The configMap that should be mounted
 	ConfigMap *KanikoAdditionalMountConfigMap `yaml:"configMap,omitempty" json:"configMap,omitempty"`
 
+	// The hostPath that should be mounted
+	HostPath *KanikoAdditionalMountHostPath `yaml:"hostPath,omitempty" json:"hostPath,omitempty"`
+
+	// The persistentVolumeClaim that should be mounted
+	PersistentVolumeClaim *KanikoAdditionalMountPersistentVolumeClaim `yaml:"persistentVolumeClaim,omitempty" json:"persistentVolumeClaim,omitempty"`
+
 	// Mounted read-only if true, read-write otherwise (false or unspecified).
 	// Defaults to false.
 	// +optional
@@ -562,6 +568,27 @@ type KanikoAdditionalMountKeyToPath struct {
 	// mode, like fsGroup, and the result can be other mode bits set.
 	// +optional
 	Mode *int32 `yaml:"mode,omitempty" json:"mode,omitempty"`
+}
+
+// KanikoAdditionalMountHostPath defines the configuration for a hostPath volume mount
+type KanikoAdditionalMountHostPath struct {
+	// Path of the directory on the host
+	Path string `yaml:"path" json:"path"`
+
+	// Type for HostPath volume
+	// Possible values: DirectoryOrCreate, Directory, FileOrCreate, File, Socket, CharDevice, BlockDevice
+	// +optional
+	Type string `yaml:"type,omitempty" json:"type,omitempty"`
+}
+
+// KanikoAdditionalMountPersistentVolumeClaim defines the configuration for a PersistentVolumeClaim mount
+type KanikoAdditionalMountPersistentVolumeClaim struct {
+	// Name of the PersistentVolumeClaim to mount
+	ClaimName string `yaml:"claimName" json:"claimName"`
+
+	// Optional: Specify if the volume should be read-only
+	// +optional
+	ReadOnly bool `yaml:"readOnly,omitempty" json:"readOnly,omitempty"`
 }
 
 // CustomConfig tells the DevSpace CLI to build with a custom build script

@@ -14,6 +14,7 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/pkg/errors"
 	k8sv1 "k8s.io/api/core/v1"
+	"k8s.io/utils/ptr"
 
 	"github.com/loft-sh/devspace/pkg/devspace/pullsecrets"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -205,6 +206,19 @@ func (b *Builder) getBuildPod(ctx devspacecontext.Context, buildID string, optio
 					Path: item.Path,
 					Mode: item.Mode,
 				})
+			}
+		} else if mount.HostPath != nil {
+			volume.VolumeSource = k8sv1.VolumeSource{
+				HostPath: &k8sv1.HostPathVolumeSource{
+					Path: mount.HostPath.Path,
+					Type: ptr.To(k8sv1.HostPathType(mount.HostPath.Type))},
+			}
+		} else if mount.PersistentVolumeClaim != nil {
+			volume.VolumeSource = k8sv1.VolumeSource{
+				PersistentVolumeClaim: &k8sv1.PersistentVolumeClaimVolumeSource{
+					ClaimName: mount.PersistentVolumeClaim.ClaimName,
+					ReadOnly:  mount.PersistentVolumeClaim.ReadOnly,
+				},
 			}
 		} else {
 			continue
